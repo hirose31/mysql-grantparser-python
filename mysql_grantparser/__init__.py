@@ -1,3 +1,4 @@
 # -*- coding: utf-8 -*-
 
-__version__ = '1.0.1'
+from .__metadata__ import __version__  # noqa: F401
+from .exporter import Exporter  # noqa: F401
