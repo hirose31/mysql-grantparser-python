@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/hirose31/mysql-grantparser-python.svg?branch=master)](https://travis-ci.org/hirose31/mysql-grantparser-python)
+
 # NAME
 
 mysql_grantparser - parse MySQL SHOW GRANTS
