@@ -76,7 +76,6 @@ is represented as following.
         },
         'options': {
             'identified': "PASSWORD XXX",
-            'required': '',
         },
     },
 }
