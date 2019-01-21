@@ -87,4 +87,4 @@ is represented as following.
 - Documentation: https://github.com/hirose31/mysql-grantparser-python/blob/master/README.md
 - Changelog: https://github.com/hirose31/mysql-grantparser-python/blob/master/CHANGELOG.md
 - Repository: https://github.com/hirose31/mysql-grantparser-python
-- Test status: fixme
+- Test status: https://travis-ci.org/hirose31/mysql-grantparser-python
