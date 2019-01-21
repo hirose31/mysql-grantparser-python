@@ -8,7 +8,7 @@ def parse(stmt: str = None,
           ) -> list:
     parsed = {
         'with': '',
-        'require': '',
+        'required': '',
         'identified': '',
         'privs': [],
         'object': '',
@@ -22,7 +22,7 @@ def parse(stmt: str = None,
         parsed['with'] = matched.group(1).strip()
 
     # require
-    matched = re.search(r'\s+REQUIRE\s+(.+?)$', stmt)
+    matched = re.search(r'\s+REQUIRE\s+(.+?)(?:\s+WITH\s+.+)?$', stmt)
     required = ''
     if matched:
         required = matched.group(1)
@@ -37,20 +37,21 @@ def parse(stmt: str = None,
         parsed['required'] = required.strip()
 
     # identified
-    matched = re.search(r'\s+IDENTIFIED BY\s+(.+?)$', stmt)
+    matched = re.search(r'\s+IDENTIFIED BY\s+(.+?)(?:\s+REQUIRE\s+.+)?$', stmt)
     identified = ''
     if matched:
         identified = matched.group(1)
     if create_user:
         matched = re.search(r"\s+IDENTIFIED\s+WITH\s+'[^']+'\s+AS\s+('[^']+')", create_user)
-        identified = matched.group(1)
-        if identified:
-            identified = 'PASSWORD %s' % identified
+        if matched:
+            identified = matched.group(1)
+            if identified:
+                identified = 'PASSWORD %s' % identified
     if identified:
         parsed['identified'] = identified.strip()
 
     # main
-    matched = re.search(r"^GRANT\s+(.+?)\s+ON\s+(.+?)\s+TO\s+'(.*)'@'(.+)'", stmt)
+    matched = re.search(r"^GRANT\s+(.+?)\s+ON\s+(.+?)\s+TO\s+'(.*)'@'(.+?)'", stmt)
     if matched:
         parsed['privs'] = parse_privs(matched.group(1).strip())
         parsed['object'] = matched.group(2).replace('`', '').strip()

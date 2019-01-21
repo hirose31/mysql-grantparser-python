@@ -16,15 +16,14 @@ class Exporter:
             host = uh['host']
 
             create_user = self.driver.show_create_user(user, host)
-            print(create_user)
 
             for stmt in self.driver.show_grants(user, host):
-                print(stmt)
                 grants.append(parse(stmt, create_user))
 
         return self.pack(grants)
 
-    def pack(self, grants: list = None):
+    @classmethod
+    def pack(cls, grants: list = None):
         packed = {}
         for grant in grants:
             user = grant.pop('user')
@@ -32,7 +31,7 @@ class Exporter:
             user_host = '@'.join([user, host])
             obj = grant.pop('object')
             identified = grant.pop('identified')
-            required = grant.pop('require')
+            required = grant.pop('required')
 
             if user_host not in packed:
                 packed[user_host] = {
