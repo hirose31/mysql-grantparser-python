@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Security
 
-## [1.0.0] - 2019-01-18
+## [1.0.0] - 2019-01-21
 ### Added
 - First public release.
 
