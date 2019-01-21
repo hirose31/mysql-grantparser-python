@@ -16,17 +16,20 @@ def numeric_part(s: str = None):
 
 class Driver:
     def __init__(self, **kwargs: dict):
-        option = {
-            'connect_timeout': 8,
-            'user': 'root',
-            'use_unicode': True,
-            'charset': 'utf8',
-            'read_default_file': '/etc/my.cnf',
-            'read_default_group': 'client',
-        }
-        option.update(kwargs)
+        if 'connection' in kwargs:
+            self.connection = kwargs['connection']
+        else:
+            option = {
+                'connect_timeout': 8,
+                'user': 'root',
+                'use_unicode': True,
+                'charset': 'utf8',
+                'read_default_file': '/etc/my.cnf',
+                'read_default_group': 'client',
+            }
+            option.update(kwargs)
+            self.connection = MySQLdb.connect(**option)
 
-        self.connection = MySQLdb.connect(**option)
         self.server_version = tuple([numeric_part(n)
                                      for n in self.connection.get_server_info().split('.')[:3]])
 
