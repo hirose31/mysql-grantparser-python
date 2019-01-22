@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+- Accept `connection` parameter to use existing connection.
+- Use mysql-connector-python instead of mysqlclient (MySQLdb)
 ### Changed
 ### Deprecated
 ### Removed

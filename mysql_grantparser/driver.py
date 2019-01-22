@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import MySQLdb
-import MySQLdb.cursors
+# workaround for https://bugs.mysql.com/bug.php?id=89889
+# at first load libcrypto.so and libssl.so from system library path.
+import ssl  # noqa: F401
+import mysql.connector
 import re
 
 re_numeric_part = re.compile(r'^(\d+)')
@@ -16,25 +18,26 @@ def numeric_part(s: str = None):
 
 class Driver:
     def __init__(self, **kwargs: dict):
-        option = {
-            'connect_timeout': 8,
-            'user': 'root',
-            'use_unicode': True,
-            'charset': 'utf8',
-            'read_default_file': '/etc/my.cnf',
-            'read_default_group': 'client',
-        }
-        option.update(kwargs)
+        if 'connection' in kwargs:
+            self.connection = kwargs['connection']
+        else:
+            option = {
+                'connect_timeout': 8,
+                'user': 'root',
+                'use_unicode': True,
+                'charset': 'utf8',
+            }
+            option.update(kwargs)
+            self.connection = mysql.connector.connect(**option)
 
-        self.connection = MySQLdb.connect(**option)
         self.server_version = tuple([numeric_part(n)
                                      for n in self.connection.get_server_info().split('.')[:3]])
 
-    def cursor(self, *args):
-        return self.connection.cursor(*args)
+    def cursor(self, **args):
+        return self.connection.cursor(**args)
 
     def each_user(self):
-        cursor = self.cursor(MySQLdb.cursors.SSDictCursor)
+        cursor = self.cursor(dictionary=True)
         cursor.execute('SELECT user, host FROM mysql.user')
         for uh in cursor.fetchall():
             yield uh
