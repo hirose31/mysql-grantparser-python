@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+# workaround for https://bugs.mysql.com/bug.php?id=89889
+# at first load libcrypto.so and libssl.so from system library path.
+import ssl  # noqa: F401
 import mysql.connector
 import re
 
