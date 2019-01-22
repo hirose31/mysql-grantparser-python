@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import MySQLdb
-import MySQLdb.cursors
+import mysql.connector
 import re
 
 re_numeric_part = re.compile(r'^(\d+)')
@@ -24,20 +23,18 @@ class Driver:
                 'user': 'root',
                 'use_unicode': True,
                 'charset': 'utf8',
-                'read_default_file': '/etc/my.cnf',
-                'read_default_group': 'client',
             }
             option.update(kwargs)
-            self.connection = MySQLdb.connect(**option)
+            self.connection = mysql.connector.connect(**option)
 
         self.server_version = tuple([numeric_part(n)
                                      for n in self.connection.get_server_info().split('.')[:3]])
 
-    def cursor(self, *args):
-        return self.connection.cursor(*args)
+    def cursor(self, **args):
+        return self.connection.cursor(**args)
 
     def each_user(self):
-        cursor = self.cursor(MySQLdb.cursors.SSDictCursor)
+        cursor = self.cursor(dictionary=True)
         cursor.execute('SELECT user, host FROM mysql.user')
         for uh in cursor.fetchall():
             yield uh
