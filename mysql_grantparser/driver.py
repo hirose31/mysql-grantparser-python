@@ -5,8 +5,10 @@
 import ssl  # noqa: F401
 import mysql.connector
 import re
+import logging
 
 re_numeric_part = re.compile(r'^(\d+)')
+logger = logging.getLogger(__name__)
 
 
 def numeric_part(s: str = None):
@@ -40,6 +42,7 @@ class Driver:
         cursor = self.cursor(dictionary=True)
         cursor.execute('SELECT user, host FROM mysql.user')
         for uh in cursor.fetchall():
+            logger.debug('each_user: %s@%s', uh['user'], uh['host'])
             yield uh
 
     def show_grants(self,
@@ -49,6 +52,7 @@ class Driver:
         cursor = self.cursor()
         cursor.execute('SHOW GRANTS FOR %s@%s', (user, host))
         for sg in cursor.fetchall():
+            logger.debug('show_grants: %s', sg[0])
             yield sg[0]
 
     def show_create_user(self,
@@ -59,4 +63,6 @@ class Driver:
             return ''
         cursor = self.cursor()
         cursor.execute('SHOW CREATE USER %s@%s', (user, host))
-        return cursor.fetchone()[0]
+        scu = cursor.fetchone()[0]
+        logger.debug('show_create_user: %s', scu)
+        return scu
