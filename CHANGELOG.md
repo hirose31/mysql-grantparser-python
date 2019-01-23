@@ -7,12 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
-- Add logger
 ### Changed
 ### Deprecated
 ### Removed
 ### Fixed
 ### Security
+
+## [1.0.2]
+### Added
+- Add logger
+- Support MySQL 5.7 and 8.0
 
 ## [1.0.1] - 2019-01-22
 ### Added
