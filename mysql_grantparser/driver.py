@@ -42,6 +42,9 @@ class Driver:
         cursor = self.cursor(dictionary=True)
         cursor.execute('SELECT user, host FROM mysql.user')
         for uh in cursor.fetchall():
+            # skip mysql.infoschema, mysql.session@localhost, mysql.sys
+            if uh['user'].startswith('mysql.') and uh['host'] == 'localhost':
+                continue
             logger.debug('each_user: %s@%s', uh['user'], uh['host'])
             yield uh
 

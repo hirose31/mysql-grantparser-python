@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import re
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def parse(stmt: str = None,
@@ -27,12 +30,15 @@ def parse(stmt: str = None,
     if matched:
         required = matched.group(1)
     if create_user:
-        matched = re.search(
-            r"\s+REQUIRE\s+(\S+(?:\s+'[^']+')?)(?:\s+WITH\s+(.+))?\s+PASSWORD\s+.+$", create_user)
-        required = matched.group(1)
-        resource_option = matched.group(2)
-        if resource_option:
+        matched = re.search(r"\s+REQUIRE\s+(.+?)\s+(?:WITH|PASSWORD)\s+", create_user)
+        if matched:
+            required = matched.group(1)
+
+        matched = re.search(r"\s+REQUIRE\s+.+\s+WITH\s+(.+)\s+PASSWORD", create_user)
+        if matched:
+            resource_option = matched.group(1)
             parsed['with'] = (parsed['with'] + ' ' + resource_option).strip()
+
     if required != 'NONE':
         parsed['required'] = required.strip()
 
@@ -51,13 +57,14 @@ def parse(stmt: str = None,
         parsed['identified'] = identified.strip()
 
     # main
-    matched = re.search(r"^GRANT\s+(.+?)\s+ON\s+(.+?)\s+TO\s+'(.*)'@'(.+?)'", stmt)
+    matched = re.search(r"^GRANT\s+(.+?)\s+ON\s+(.+?)\s+TO\s+['`](.*)['`]@['`](.+?)['`]", stmt)
     if matched:
         parsed['privs'] = parse_privs(matched.group(1).strip())
         parsed['object'] = matched.group(2).replace('`', '').strip()
         parsed['user'] = matched.group(3).strip()
         parsed['host'] = matched.group(4).strip()
 
+    logger.debug('parsed: %s', parsed)
     return parsed
 
 
