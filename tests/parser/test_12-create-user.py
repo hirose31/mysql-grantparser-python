@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
 
+
 from mysql_grantparser.parser import parse
 from mysql_grantparser.exporter import Exporter
 from utils import dump_json
 
+# MySQL 5.7 style
 tests = [
     [
         [
+            r"CREATE USER 'root'@'%' IDENTIFIED WITH 'mysql_native_password' AS '*0380BEA27363E56C37F0BFDA438F429080848051' REQUIRE NONE PASSWORD EXPIRE DEFAULT ACCOUNT UNLOCK",
             r"GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION",
+
         ],
         {
             'root@%': {
@@ -20,6 +24,7 @@ tests = [
                     },
                 },
                 'options': {
+                    'identified': r"PASSWORD '*0380BEA27363E56C37F0BFDA438F429080848051'",
                 },
             },
         },
@@ -28,7 +33,8 @@ tests = [
 
     [
         [
-            r"GRANT USAGE ON *.* TO 'scott'@'%' IDENTIFIED BY PASSWORD '*F2F68D0BB27A773C1D944270E5FAFED515A3FA40'",
+            r"CREATE USER 'scott'@'%' IDENTIFIED WITH 'mysql_native_password' AS '*0380BEA27363E56C37F0BFDA438F429080848051' REQUIRE NONE PASSWORD EXPIRE DEFAULT ACCOUNT UNLOCK",
+            r"GRANT USAGE ON *.* TO 'scott'@'%'",
             r"GRANT SELECT, INSERT, UPDATE, DELETE ON `orcl`.* TO 'scott'@'%' WITH GRANT OPTION",
         ],
         {
@@ -45,7 +51,7 @@ tests = [
                     },
                 },
                 'options': {
-                    'identified': r"PASSWORD '*F2F68D0BB27A773C1D944270E5FAFED515A3FA40'",
+                    'identified': r"PASSWORD '*0380BEA27363E56C37F0BFDA438F429080848051'",
                 },
             },
         },
@@ -53,20 +59,26 @@ tests = [
     ],
     [
         [
-            r"GRANT USAGE ON *.* TO 'scott'@'localhost' IDENTIFIED BY PASSWORD '*F2F68D0BB27A773C1D944270E5FAFED515A3FA40' REQUIRE SSL WITH GRANT OPTION MAX_QUERIES_PER_HOUR 1 MAX_UPDATES_PER_HOUR 2 MAX_CONNECTIONS_PER_HOUR 3 MAX_USER_CONNECTIONS 4",
+            r"CREATE USER 'scott2'@'%' IDENTIFIED WITH 'mysql_native_password' AS '*0380BEA27363E56C37F0BFDA438F429080848051' REQUIRE SSL WITH MAX_QUERIES_PER_HOUR 1 MAX_UPDATES_PER_HOUR 2 MAX_CONNECTIONS_PER_HOUR 3 MAX_USER_CONNECTIONS 4 PASSWORD EXPIRE DEFAULT ACCOUNT UNLOCK",
+            r"GRANT USAGE ON *.* TO 'scott2'@'%'",
+            r"GRANT SELECT, INSERT, UPDATE, DELETE ON `orcl`.* TO 'scott2'@'%' WITH GRANT OPTION",
         ],
         {
-            'scott@localhost': {
-                'user': 'scott',
-                'host': 'localhost',
+            'scott2@%': {
+                'user': 'scott2',
+                'host': '%',
                 'objects': {
                     '*.*': {
                         'privs': ['USAGE'],
+                        'with': 'MAX_QUERIES_PER_HOUR 1 MAX_UPDATES_PER_HOUR 2 MAX_CONNECTIONS_PER_HOUR 3 MAX_USER_CONNECTIONS 4',
+                    },
+                    'orcl.*': {
+                        'privs': ['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
                         'with': 'GRANT OPTION MAX_QUERIES_PER_HOUR 1 MAX_UPDATES_PER_HOUR 2 MAX_CONNECTIONS_PER_HOUR 3 MAX_USER_CONNECTIONS 4',
                     },
                 },
                 'options': {
-                    'identified': r"PASSWORD '*F2F68D0BB27A773C1D944270E5FAFED515A3FA40'",
+                    'identified': r"PASSWORD '*0380BEA27363E56C37F0BFDA438F429080848051'",
                     'required': 'SSL',
                 },
             },
@@ -75,19 +87,26 @@ tests = [
     ],
     [
         [
-            r"GRANT USAGE ON *.* TO 'scott'@'%' REQUIRE ISSUER '/C=SE/ST=Stockholm/L=Stockholm/O=MySQL/CN=CA/emailAddress=ca@example.com' SUBJECT '/C=SE/ST=Stockholm/L=Stockholm/O=MySQL demo client certificate/CN=client/emailAddress=client@example.com'",
+            r"CREATE USER 'scott3'@'%' IDENTIFIED WITH 'mysql_native_password' AS '*0380BEA27363E56C37F0BFDA438F429080848051' REQUIRE SUBJECT '/C=SE/ST=Stockholm/L=Stockholm/O=MySQL demo client certificate/CN=client/emailAddress=client@example.com' ISSUER '/C=SE/ST=Stockholm/L=Stockholm/O=MySQL/CN=CA/emailAddress=ca@example.com' PASSWORD EXPIRE DEFAULT ACCOUNT UNLOCK",
+            r"GRANT USAGE ON *.* TO 'scott3'@'%'",
+            r"GRANT SELECT, INSERT, UPDATE, DELETE ON `orcl`.* TO 'scott3'@'%' WITH GRANT OPTION",
         ],
         {
-            'scott@%': {
-                'user': 'scott',
+            'scott3@%': {
+                'user': 'scott3',
                 'host': '%',
                 'objects': {
                     '*.*': {
                         'privs': ['USAGE'],
                     },
+                    'orcl.*': {
+                        'privs': ['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
+                        'with': 'GRANT OPTION',
+                    },
                 },
                 'options': {
-                    'required': r"ISSUER '/C=SE/ST=Stockholm/L=Stockholm/O=MySQL/CN=CA/emailAddress=ca@example.com' SUBJECT '/C=SE/ST=Stockholm/L=Stockholm/O=MySQL demo client certificate/CN=client/emailAddress=client@example.com'",
+                    'identified': r"PASSWORD '*0380BEA27363E56C37F0BFDA438F429080848051'",
+                    'required': r"SUBJECT '/C=SE/ST=Stockholm/L=Stockholm/O=MySQL demo client certificate/CN=client/emailAddress=client@example.com' ISSUER '/C=SE/ST=Stockholm/L=Stockholm/O=MySQL/CN=CA/emailAddress=ca@example.com'",
                 },
             },
         },
@@ -95,13 +114,14 @@ tests = [
     ],
     [
         [
-            r"GRANT USAGE ON *.* TO 'scott'@'%' IDENTIFIED BY PASSWORD '*5BCB3E6AC345B435C7C2E6B7949A04CE6F6563D3'",
-            r"GRANT SELECT, INSERT, UPDATE, DELETE ON `t`.* TO 'scott'@'%'",
-            r"GRANT SELECT (c1), INSERT (c2, c1), DELETE ON `t`.`t1` TO 'scott'@'%'",
+            r"CREATE USER 'scott4'@'%' IDENTIFIED WITH 'mysql_native_password' AS '*0380BEA27363E56C37F0BFDA438F429080848051' REQUIRE NONE PASSWORD EXPIRE DEFAULT ACCOUNT UNLOCK",
+            r"GRANT USAGE ON *.* TO 'scott4'@'%'",
+            r"GRANT SELECT, INSERT, UPDATE, DELETE ON `t`.* TO 'scott4'@'%'",
+            r"GRANT SELECT (c1), INSERT (c2, c1), DELETE ON `t`.`t1` TO 'scott4'@'%'",
         ],
         {
-            'scott@%': {
-                'user': 'scott',
+            'scott4@%': {
+                'user': 'scott4',
                 'host': '%',
                 'objects': {
                     '*.*': {
@@ -115,7 +135,7 @@ tests = [
                     },
                 },
                 'options': {
-                    'identified': r"PASSWORD '*5BCB3E6AC345B435C7C2E6B7949A04CE6F6563D3'",
+                    'identified': r"PASSWORD '*0380BEA27363E56C37F0BFDA438F429080848051'",
                 },
             },
         },
