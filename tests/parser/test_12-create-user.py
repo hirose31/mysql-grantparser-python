@@ -25,6 +25,7 @@ tests = [
                 },
                 'options': {
                     'identified': r"PASSWORD '*0380BEA27363E56C37F0BFDA438F429080848051'",
+                    'required': '',
                 },
             },
         },
@@ -44,6 +45,7 @@ tests = [
                 'objects': {
                     '*.*': {
                         'privs': ['USAGE'],
+                        'with': '',
                     },
                     'orcl.*': {
                         'privs': ['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
@@ -52,6 +54,7 @@ tests = [
                 },
                 'options': {
                     'identified': r"PASSWORD '*0380BEA27363E56C37F0BFDA438F429080848051'",
+                    'required': '',
                 },
             },
         },
@@ -98,6 +101,7 @@ tests = [
                 'objects': {
                     '*.*': {
                         'privs': ['USAGE'],
+                        'with': '',
                     },
                     'orcl.*': {
                         'privs': ['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
@@ -126,16 +130,20 @@ tests = [
                 'objects': {
                     '*.*': {
                         'privs': ['USAGE'],
+                        'with': '',
                     },
                     't.*': {
                         'privs': ['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
+                        'with': '',
                     },
                     't.t1': {
                         'privs': ['SELECT (c1)', 'INSERT (c2, c1)', 'DELETE'],
+                        'with': '',
                     },
                 },
                 'options': {
                     'identified': r"PASSWORD '*0380BEA27363E56C37F0BFDA438F429080848051'",
+                    'required': '',
                 },
             },
         },

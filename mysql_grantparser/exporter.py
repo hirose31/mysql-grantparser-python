@@ -38,11 +38,12 @@ class Exporter:
                     'user': user,
                     'host': host,
                     'objects': {},
-                    'options': {},
+                    'options': {
+                        'identified': '',
+                        'required': '',
+                    },
                 }
 
-            if grant['with'] == '':
-                grant.pop('with')
             packed[user_host]['objects'][obj] = grant
             if required:
                 packed[user_host]['options']['required'] = required

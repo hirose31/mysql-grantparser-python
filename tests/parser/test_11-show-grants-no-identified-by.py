@@ -18,6 +18,7 @@ tests = [
                 'objects': {
                     '*.*': {
                         'privs': ['USAGE'],
+                        'with': '',
                     },
                     'orcl.*': {
                         'privs': ['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
@@ -26,6 +27,7 @@ tests = [
                 },
                 'options': {
                     'identified': r"PASSWORD '*F2F68D0BB27A773C1D944270E5FAFED515A3FA40'",
+                    'required': '',
                 },
             },
         },
@@ -52,6 +54,8 @@ tests = [
                     },
                 },
                 'options': {
+                    'identified': '',
+                    'required': '',
                 },
             },
         },

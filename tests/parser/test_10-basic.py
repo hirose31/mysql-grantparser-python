@@ -20,6 +20,8 @@ tests = [
                     },
                 },
                 'options': {
+                    'identified': '',
+                    'required': '',
                 },
             },
         },
@@ -38,6 +40,7 @@ tests = [
                 'objects': {
                     '*.*': {
                         'privs': ['USAGE'],
+                        'with': '',
                     },
                     'orcl.*': {
                         'privs': ['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
@@ -46,6 +49,7 @@ tests = [
                 },
                 'options': {
                     'identified': r"PASSWORD '*F2F68D0BB27A773C1D944270E5FAFED515A3FA40'",
+                    'required': '',
                 },
             },
         },
@@ -84,10 +88,12 @@ tests = [
                 'objects': {
                     '*.*': {
                         'privs': ['USAGE'],
+                        'with': '',
                     },
                 },
                 'options': {
                     'required': r"ISSUER '/C=SE/ST=Stockholm/L=Stockholm/O=MySQL/CN=CA/emailAddress=ca@example.com' SUBJECT '/C=SE/ST=Stockholm/L=Stockholm/O=MySQL demo client certificate/CN=client/emailAddress=client@example.com'",
+                    'identified': '',
                 },
             },
         },
@@ -106,16 +112,20 @@ tests = [
                 'objects': {
                     '*.*': {
                         'privs': ['USAGE'],
+                        'with': '',
                     },
                     't.*': {
                         'privs': ['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
+                        'with': '',
                     },
                     't.t1': {
                         'privs': ['SELECT (c1)', 'INSERT (c2, c1)', 'DELETE'],
+                        'with': '',
                     },
                 },
                 'options': {
                     'identified': r"PASSWORD '*5BCB3E6AC345B435C7C2E6B7949A04CE6F6563D3'",
+                    'required': '',
                 },
             },
         },
