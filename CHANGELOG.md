@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Security
 
+## [1.0.3]
+### Changed
+- Add keys options.identified,required, objects.*.with even if no value
+
 ## [1.0.2]
 ### Added
 - Add logger
