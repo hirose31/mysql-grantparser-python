@@ -44,7 +44,11 @@ class Exporter:
                     },
                 }
 
-            packed[user_host]['objects'][obj] = grant
+            if obj not in packed[user_host]['objects']:
+                packed[user_host]['objects'][obj] = grant
+            else:
+                packed[user_host]['objects'][obj]['privs'].extend(grant['privs'])
+
             if required:
                 packed[user_host]['options']['required'] = required
             if identified:

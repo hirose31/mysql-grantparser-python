@@ -60,7 +60,15 @@ def parse(stmt: str = None,
     matched = re.search(r"^GRANT\s+(.+?)\s+ON\s+(.+?)\s+TO\s+['`](.*)['`]@['`](.+?)['`]", stmt)
     if matched:
         parsed['privs'] = parse_privs(matched.group(1).strip())
+
         parsed['object'] = matched.group(2).replace('`', '').strip()
+
+        # support GRANT PROXY ON ``@``
+        if parsed['object'].startswith('@'):
+            parsed['object'] = '``' + parsed['object']
+        if parsed['object'].endswith('@'):
+            parsed['object'] = parsed['object'] + '``'
+
         parsed['user'] = matched.group(3).strip()
         parsed['host'] = matched.group(4).strip()
 
