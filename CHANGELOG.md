@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 ### Security
 
+## [1.0.5]
+### Fixed
+- Ignore password_option
+
 ## [1.0.4]
 ### Fixed
 - Avoided duplication of the same WITH clause
