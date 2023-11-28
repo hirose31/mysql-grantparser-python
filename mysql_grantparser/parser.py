@@ -34,7 +34,7 @@ def parse(stmt: str = None,
         if matched:
             required = matched.group(1)
 
-        matched = re.search(r"\s+REQUIRE\s+.+\s+WITH\s+(.+)\s+PASSWORD", create_user)
+        matched = re.search(r"\s+REQUIRE\s+.+\s+WITH\s+(.+?)\s+PASSWORD", create_user)
         if matched:
             resource_option = matched.group(1)
             parsed['with'] = (parsed['with'] + ' ' + resource_option).strip()
